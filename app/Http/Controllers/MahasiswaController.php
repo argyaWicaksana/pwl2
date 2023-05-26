@@ -107,4 +107,14 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.index')
             ->with('success', 'Mahasiswa Berhasil Dihapus');
     }
+
+    public function score(Mahasiswa $mahasiswa)
+    {
+        $matkul = $mahasiswa->mataKuliah;
+
+        return view('mahasiswa.score', [
+            'mahasiswa' => $mahasiswa,
+            'matkul' => $matkul
+        ]);
+    }
 }

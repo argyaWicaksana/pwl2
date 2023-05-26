@@ -9,15 +9,28 @@ class Mahasiswa extends Model
 {
     use HasFactory;
     protected $table = 'mahasiswa';
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'nim',
+        'nama',
+        'kelas_id',
+        'jurusan',
+        'no_hp'
+    ];
+    protected $primaryKey = 'nim';
 
     public function kelas()
     {
         return $this->belongsTo(Kelas::class);
     }
 
+    public function mataKuliah()
+    {
+        return $this->belongsToMany(MataKuliah::class, 'mahasiswa_matakuliah', 'mahasiswa_nim', 'matakuliah_id')
+            ->withPivot('nilai');
+    }
+
     public function getRouteKeyName()
     {
-        return 'nim';        
+        return 'nim';
     }
 }
