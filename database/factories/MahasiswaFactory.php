@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Kelas;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ class MahasiswaFactory extends Factory
         return [
             'nim' => $this->faker->numerify('##########'),
             'nama' => $this->faker->name(),
-            'kelas' => $this->generateRandomClass(),
+            'kelas_id' => Kelas::all()->random()->id,
             'jurusan' => 'Teknologi Informasi',
             'no_hp' => $this->faker->phoneNumber(),
             'email' => $this->faker->email(),
@@ -27,11 +28,11 @@ class MahasiswaFactory extends Factory
         ];
     }
 
-    public function generateRandomClass(): string
-    {
-        $randomMajor = $this->faker->randomElement(['TI', 'SIB']);
-        $randomClass = $this->faker->regexify('[1-4]{1}[A-I]{1}');
+    // public function generateRandomClass(): string
+    // {
+    //     $randomMajor = $this->faker->randomElement(['TI', 'SIB']);
+    //     $randomClass = $this->faker->regexify('[1-4]{1}[A-I]{1}');
 
-        return "$randomMajor-$randomClass";
-    }
+    //     return "$randomMajor-$randomClass";
+    // }
 }

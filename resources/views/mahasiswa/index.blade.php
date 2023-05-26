@@ -42,7 +42,7 @@
 
                     <td>{{ $m->nim }}</td>
                     <td>{{ $m->nama }}</td>
-                    <td>{{ $m->kelas }}</td>
+                    <td>{{ $m->kelas->nama_kelas }}</td>
                     <td>{{ $m->jurusan }}</td>
                     <td>{{ $m->no_hp }}</td>
                     <td>{{ $m->email }}</td>
