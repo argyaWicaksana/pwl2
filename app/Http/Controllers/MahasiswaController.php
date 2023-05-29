@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MahasiswaController extends Controller
 {
@@ -20,7 +21,7 @@ class MahasiswaController extends Controller
     {
         $mahasiswa = Mahasiswa::orderBy('nim', 'desc')->with('kelas');
         if ($request->get('s')) {
-            $mahasiswa = $mahasiswa->where('nama', 'LIKE', '%'.$request->get('s').'%');
+            $mahasiswa = $mahasiswa->where('nama', 'LIKE', '%' . $request->get('s') . '%');
         }
         $mahasiswa = $mahasiswa->paginate(5);
         return view('mahasiswa.index', compact('mahasiswa'))
@@ -49,7 +50,12 @@ class MahasiswaController extends Controller
             'no_hp' => 'required|string',
             'email' => 'required|email',
             'tgl_lahir' => 'required|date',
+            'photo' => 'image|file|max:5200',
         ]);
+
+        if ($request->photo) {
+            $validatedData['photo'] = $request->photo->store('photos');
+        }
 
         Mahasiswa::create($validatedData);
         return redirect()->route('mahasiswa.index')
@@ -90,10 +96,18 @@ class MahasiswaController extends Controller
             'no_hp' => 'required|string',
             'email' => 'required|email',
             'tgl_lahir' => 'required|date',
+            'photo' => 'image|file|max:5200',
         ]);
 
+        if ($request->photo) {
+            if ($mahasiswa->photo) {
+                Storage::delete($mahasiswa->photo);
+            }
+            $validatedData['photo'] = $request->photo->store('photos');
+        }
+
         Mahasiswa::where('nim', $mahasiswa->nim)->update($validatedData);
-        
+
         return redirect()->route('mahasiswa.index')
             ->with('success', 'Mahasiswa Berhasil Diupdate');
     }
@@ -103,7 +117,11 @@ class MahasiswaController extends Controller
      */
     public function destroy(Mahasiswa $mahasiswa)
     {
-        Mahasiswa::where('nim', $mahasiswa->nim)->delete();
+        if ($mahasiswa->photo) {
+            Storage::delete($mahasiswa->photo);
+        }
+
+        Mahasiswa::destroy($mahasiswa->nim);
         return redirect()->route('mahasiswa.index')
             ->with('success', 'Mahasiswa Berhasil Dihapus');
     }
